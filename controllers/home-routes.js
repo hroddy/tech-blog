@@ -6,17 +6,14 @@ const router = require("express").Router();
 
 //render home page with posts
 router.get("/", withAuth, (req, res) => {
-  //res.render('home', posts)
-  Post.findAll({ include: User }).then((postsData) =>
-    res.render("home", postsData)
-  );
+  Post.findAll({ include: [User, Comment] }).then((postsData) => {
+    return res.render("home", { posts: postsData });
+  });
 });
 
-//render home page with posts
+//render home page with posts if user types /home
 router.get("/home", withAuth, (req, res) => {
-  //res.render('home', posts)
   Post.findAll({ include: [User, Comment] }).then((postsData) => {
-    //console.log(postsData)
     return res.render("home", { posts: postsData });
   });
 });
@@ -27,15 +24,11 @@ router.get("/post/:id", withAuth, (req, res) => {
     where: {
       id: req.params.id,
     },
-    // raw: true,
-    // nest: true,
     include: [User, Comment],
   }).then((dbPostData) => {
       
     if (dbPostData) {
         const post = dbPostData.get({plain: true})
-        // post.comments = post.comments.map(comment => comment.get({plain: true}))
-        console.log(post)
     return res.render("single-post", { post: post });
     } else {
         res.status(404).end();
@@ -62,7 +55,6 @@ router.get("/signup", withoutAuth, (req, res) => {
 router.get("/logout", withAuth, (req, res) => {
   if (req.session.loggedIn) {
     req.session.destroy(() => {
-      //res.status(204).end();
       res.redirect("/login");
     });
   } else {
