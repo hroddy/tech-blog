@@ -1,18 +1,18 @@
 const session = require("express-session");
 const { Post, User, Comment } = require("../models");
-const { withAuth, withoutAuth } = require("../utils/auth");
+const { withAuth } = require("../utils/auth");
 
 const router = require("express").Router();
 
 //render home page with posts
-router.get("/", withAuth, (req, res) => {
+router.get("/", (req, res) => {
   Post.findAll({ include: [User, Comment] }).then((postsData) => {
     return res.render("home", { posts: postsData });
   });
 });
 
 //render home page with posts if user types /home
-router.get("/home", withAuth, (req, res) => {
+router.get("/home", (req, res) => {
   Post.findAll({ include: [User, Comment] }).then((postsData) => {
     return res.render("home", { posts: postsData });
   });
@@ -38,14 +38,14 @@ router.get("/post/:id", withAuth, (req, res) => {
 });
 
 //render login/sign up page
-router.get("/login", withoutAuth, (req, res) => {
+router.get("/login", (req, res) => {
   return res.render("login", {
     layout: "landing",
   });
 });
 
 //render login/sign up page if user tries to go to /sign-up
-router.get("/signup", withoutAuth, (req, res) => {
+router.get("/signup", (req, res) => {
   return res.render("login", {
     layout: "landing",
   });

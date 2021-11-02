@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const { User, Post, Comment } = require("../../models");
-const { withAuth, withoutAuth } = require("../../utils/auth");
+const { withAuth } = require("../../utils/auth");
 
 // get all users
 router.get("/", withAuth, (req, res) => {
@@ -24,7 +24,7 @@ router.get('/:id', withAuth, (req, res) => {
       include: [
         {
           model: Post,
-          attributes: ['id', 'title', 'post_url', 'created_at']
+          attributes: ['id', 'title', 'post_body', 'created_at']
         },
         {
           model: Comment,
@@ -50,14 +50,14 @@ router.get('/:id', withAuth, (req, res) => {
   });
 
 //login
-router.post("/login", withoutAuth, (req, res) => {
+router.post("/login", (req, res) => {
   User.findOne({
     where: {
-      email: req.body.email,
+      username: req.body.username,
     }
   }).then((user) => {
     console.log(user);
-    //check for existing user with this email
+    //check for existing user with this username
     if (!user) {
       res.status(400).json({ message: "No user with that username!" });
       return;
@@ -95,7 +95,7 @@ router.post('/logout', withAuth, (req, res) => {
   });
 
 //create a new user
-router.post("/", withoutAuth, (req, res) => {
+router.post("/", (req, res) => {
   // expects {username: 'Lernantino', email: 'lernantino@gmail.com', password: 'password1234'}
   User.create(
     req.body
