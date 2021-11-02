@@ -1,9 +1,9 @@
 const router = require("express").Router();
 const { Post, User, Comment } = require("../../models");
-const withAuth = require("../../utils/auth");
+const { withAuth } = require("../../utils/auth");
 
 // get all user's posts
-router.get("/", (req, res) => {
+router.get("/", withAuth, (req, res) => {
   console.log("======================");
   Post.findAll({
     attributes: ["id", "post_url", "title", "created_at"],
@@ -22,7 +22,10 @@ router.get("/", (req, res) => {
       },
     ],
   })
-    .then((posts) => res.json(posts))
+    .then((posts) => {
+      console.log("posts", posts)
+      return res.json(posts)
+    })
     .catch((err) => {
       console.log(err);
       res.status(500).json(err);
@@ -30,7 +33,7 @@ router.get("/", (req, res) => {
 });
 
 //get one post
-router.get("/:id", (req, res) => {
+router.get("/:id", withAuth, (req, res) => {
   Post.findOne({
     where: {
       id: req.params.id,
@@ -67,6 +70,7 @@ router.get("/:id", (req, res) => {
 //create a new post
 router.post("/", withAuth, (req, res) => {
   // expects {title: 'Taskmaster goes public!', post_url: 'https://taskmaster.com/press', user_id: 1}
+  console.log(req.body)
   Post.create({
     title: req.body.title,
     post_url: req.body.post_url,

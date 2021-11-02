@@ -1,8 +1,9 @@
 const router = require("express").Router();
 const { User, Post, Comment } = require("../../models");
+const { withAuth, withoutAuth } = require("../../utils/auth");
 
 // get all users
-router.get("/", (req, res) => {
+router.get("/", withAuth, (req, res) => {
   User.findAll({
     attributes: { exclude: ["password"] },
   })
@@ -14,7 +15,7 @@ router.get("/", (req, res) => {
 });
 
 //fetch a specifc user and their post/comment history
-router.get('/:id', (req, res) => {
+router.get('/:id', withAuth, (req, res) => {
     User.findOne({
       attributes: { exclude: ['password'] },
       where: {
@@ -49,21 +50,22 @@ router.get('/:id', (req, res) => {
   });
 
 //login
-router.post("/login", (req, res) => {
+router.post("/login", withoutAuth, (req, res) => {
   User.findOne({
     where: {
       email: req.body.email,
     }
   }).then((user) => {
+    console.log(user);
     //check for existing user with this email
     if (!user) {
-      res.status(400).json({ message: "No user with that email address!" });
+      res.status(400).json({ message: "No user with that username!" });
       return;
     }
 
     //check for valid password
     const validPassword = user.checkPassword(req.body.password);
-
+    console.log(validPassword);
     if (!validPassword) {
       res.status(400).json({ message: "Incorrect password!" });
       return;
@@ -71,15 +73,17 @@ router.post("/login", (req, res) => {
 
     //otherwise log them in
     req.session.save(() => {
+      req.session.user_id = user.id;
+      req.session.username = user.username;
       req.session.loggedIn = true;
-      req.session.id = user.id;
-      res.json({ message: "You are now logged in." });
+
+      res.json(user);
     });
   });
 });
 
 //logout
-router.post('/logout', (req, res) => {
+router.post('/logout', withAuth, (req, res) => {
     if (req.session.loggedIn) {
       req.session.destroy(() => {
         res.status(204).json({ message: "You are now logged out." });
@@ -91,7 +95,7 @@ router.post('/logout', (req, res) => {
   });
 
 //create a new user
-router.post("/", (req, res) => {
+router.post("/", withoutAuth, (req, res) => {
   // expects {username: 'Lernantino', email: 'lernantino@gmail.com', password: 'password1234'}
   User.create(
     req.body
@@ -112,7 +116,7 @@ router.post("/", (req, res) => {
 });
 
 //update a user
-router.put("/:id", (req, res) => {
+router.put("/:id", withAuth, (req, res) => {
   // expects {username: 'Lernantino', email: 'lernantino@gmail.com', password: 'password1234'}
 
   // pass in req.body instead to only update what's passed through
@@ -136,7 +140,7 @@ router.put("/:id", (req, res) => {
 });
 
 //delete a user
-router.delete("/:id", (req, res) => {
+router.delete("/:id", withAuth, (req, res) => {
   User.destroy({
     where: {
       id: req.params.id,

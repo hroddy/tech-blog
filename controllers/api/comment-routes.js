@@ -1,9 +1,9 @@
 const router = require("express").Router();
 const { Comment } = require("../../models");
-const withAuth = require('../../utils/auth');
+const { withAuth } = require('../../utils/auth');
 
 //get all comments
-router.get("/", (req, res) => {
+router.get("/", withAuth, (req, res) => {
   Comment.findAll()
     .then((comments) => res.json(comments))
     .catch((err) => {
