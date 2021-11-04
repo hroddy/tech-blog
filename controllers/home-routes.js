@@ -7,15 +7,23 @@ const router = require("express").Router();
 //render home page with posts
 router.get("/", (req, res) => {
   Post.findAll({ include: [User, Comment] }).then((postsData) => {
-    return res.render("home", { posts: postsData });
-  });
+    const posts = postsData.map((post) => post.get({ plain: true }));
+    return res.render("home", { posts });
+  })
+    .catch((err) => {
+      res.status(500).json(err);
+    });
 });
 
 //render home page with posts if user types /home
 router.get("/home", (req, res) => {
   Post.findAll({ include: [User, Comment] }).then((postsData) => {
-    return res.render("home", { posts: postsData });
-  });
+    const posts = postsData.map((post) => post.get({ plain: true }));
+    return res.render("home", { posts });
+  })
+    .catch((err) => {
+      res.status(500).json(err);
+    });
 });
 
 //render post by id
@@ -24,11 +32,18 @@ router.get("/post/:id", withAuth, (req, res) => {
     where: {
       id: req.params.id,
     },
-    include: [User, Comment],
+    include: [
+      User,
+      {
+        model: Comment,
+        include: [User],
+      },
+    ],
   }).then((dbPostData) => {
       
     if (dbPostData) {
         const post = dbPostData.get({plain: true})
+        console.log(post);
     return res.render("single-post", { post: post });
     } else {
         res.status(404).end();

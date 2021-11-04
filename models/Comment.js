@@ -1,5 +1,6 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
+const { format_date } = require('../utils/helpers');
 
 class Comment extends Model {}
 
@@ -31,7 +32,12 @@ Comment.init(
         model: 'post',
         key: 'id'
       }
-    }
+    },
+    // createdAt: {
+    //   type: Date,
+    //   default: Date.now,
+    //   get: (createdAtVal) => format_date(createdAtVal)
+    // }
   },
   {
     sequelize,
