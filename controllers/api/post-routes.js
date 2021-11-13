@@ -23,7 +23,7 @@ router.get("/", withAuth, (req, res) => {
     ],
   })
     .then((posts) => {
-      return res.json(posts)
+      return res.json(posts);
     })
     .catch((err) => {
       console.log(err);
@@ -58,7 +58,7 @@ router.get("/:id", (req, res) => {
         res.status(404).json({ message: "No post found with this id" });
         return;
       }
-      
+
       res.json(post);
     })
     .catch((err) => {
@@ -84,21 +84,17 @@ router.post("/", withAuth, (req, res) => {
 
 //update a post
 router.put("/:id", withAuth, (req, res) => {
-  Post.update(
-    {
-      title: req.body.title,
+  Post.update(req.body, {
+    where: {
+      id: req.params.id,
     },
-    {
-      where: {
-        id: req.params.id,
-      },
-    }
-  )
+  })
     .then((updatedPost) => {
       if (!updatedPost) {
         res.status(404).json({ message: "No post found with this id" });
         return;
       }
+
       res.json(updatedPost);
     })
     .catch((err) => {

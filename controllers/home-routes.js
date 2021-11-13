@@ -43,7 +43,6 @@ router.get("/post/:id", withAuth, (req, res) => {
       
     if (dbPostData) {
         const post = dbPostData.get({plain: true})
-        console.log(post);
     return res.render("single-post", { post: post });
     } else {
         res.status(404).end();

@@ -29,11 +29,6 @@ Post.init(
           key: 'id'
         }
       },
-      // createdAt: {
-      //   type: Date,
-      //   default: Date.now,
-      //   get: (createdAtVal) => format_date(createdAtVal)
-      // },
     },
     {
       sequelize,

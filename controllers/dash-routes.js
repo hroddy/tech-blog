@@ -55,9 +55,9 @@ router.get("/edit/:id", withAuth, (req, res) => {
     ],
   })
     .then((editedPost) => {
+      console.log(editedPost);
       if (editedPost) {
         const post = editedPost.get({ plain: true });
-        console.log(post)
         res.render("edit-post", {
           post,
           loggedIn: true,

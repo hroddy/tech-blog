@@ -48,6 +48,7 @@ button:hover {
 }
 
 .post-list {
+  background-color: #ccc;
   margin: 0;
   padding: 0;
 }
@@ -98,24 +99,6 @@ header {
 main {
   flex: 1;
   padding: 2% 4%;
-}
-
-.btn-no-style {
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  text-decoration: none;
-  color: var(--orange);;
-  font-size: 100%;
-  font-weight: bold;
-  transition: color 0.1s;
-  margin-left: 16px;
-}
-
-.btn-no-style:hover {
-  background: none;
-  color: var(--orange-hover);
 }
 
 .delete-post-btn {
