@@ -16,7 +16,7 @@
 ----
 
 ## Usage
-Naviagate to heroku.link and create an account by clicking "login". You will need to create an username, password, and provide your email address. You will use your username and password to login. Create posts and edit your old posts on your dashboard. View all users' posts and comments on the home page.
+Naviagate to https://tech-blog-hroddy.herokuapp.com/ and create an account by clicking "login". You will need to create an username, password, and provide your email address. You will use your username and password to login. Create posts and edit your old posts on your dashboard. View all users' posts and comments on the home page.
 
 ----
 
